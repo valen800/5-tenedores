@@ -9,7 +9,7 @@ import Modal from "../Modal";
 import { v5 as uuidv5 } from "uuid";
 
 import { firebaseApp } from "../../utils/FireBase";
-import firebase from "firebase/app";
+import firebase from "firebase";
 import "firebase/firestore";
 const db = firebase.firestore(firebaseApp);
 
@@ -42,7 +42,7 @@ export default function AddRestaurantForm(props) {
       );
     } else {
       setIsLoading(true);
-      uploadImagesStorage(imagesSelected).then(arrayImages => {
+      uploadImagesStorage(imagesSelected).then((arrayImages) => {
         db.collection("restaurants")
           .add({
             name: restaurantName,
@@ -54,13 +54,13 @@ export default function AddRestaurantForm(props) {
             ratingTotal: 0,
             quantityVoting: 0,
             createAt: new Date(),
-            createBy: firebaseApp.auth().currentUser.uid
+            createBy: firebaseApp.auth().currentUser.uid,
           })
           .then(() => {
             setIsLoading(false);
             navigation.navigate("Restaurants");
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
             setIsLoading(false);
             toastRef.current.show(
@@ -74,17 +74,17 @@ export default function AddRestaurantForm(props) {
   /*Sube todas las fotos a firebase 
   con una uuid generada por nosotros 
   y devuelve un array con los nombres de las fotos*/
-  const uploadImagesStorage = async imageArray => {
+  const uploadImagesStorage = async (imageArray) => {
     const imagesBlob = [];
     await Promise.all(
-      imageArray.map(async image => {
+      imageArray.map(async (image) => {
         const response = await fetch(image);
         const blob = await response.blob();
         const ref = firebase
           .storage()
           .ref("restaurant-images")
           .child(uuidv5(image, uuidv5.URL));
-        await ref.put(blob).then(result => {
+        await ref.put(blob).then((result) => {
           imagesBlob.push(result.metadata.name);
         });
       })
@@ -159,7 +159,7 @@ function UploadImage(props) {
     } else {
       const result = await ImagePicker.launchImageLibraryAsync({
         allowsEditing: true,
-        aspect: [4, 3]
+        aspect: [4, 3],
       });
 
       if (result.cancelled) {
@@ -173,7 +173,7 @@ function UploadImage(props) {
     }
   };
 
-  const removeImage = image => {
+  const removeImage = (image) => {
     const arrayImages = imagesSelected;
 
     Alert.alert(
@@ -182,15 +182,15 @@ function UploadImage(props) {
       [
         {
           text: "Cancel",
-          style: "Cancel"
+          style: "Cancel",
         },
         {
           text: "Eliminar",
           onPress: () =>
             setImagesSelected(
-              arrayImages.filter(imageUrl => imageUrl !== image)
-            )
-        }
+              arrayImages.filter((imageUrl) => imageUrl !== image)
+            ),
+        },
       ],
       { cancelable: false }
     );
@@ -226,7 +226,7 @@ function FormAdd(props) {
     setRestaurantAddress,
     setrestaurantDescription,
     setIsVisibleMap,
-    locationRestaurant
+    locationRestaurant,
   } = props;
 
   return (
@@ -234,7 +234,7 @@ function FormAdd(props) {
       <Input
         placeholder="Nombre restaurante"
         containerStyle={styles.input}
-        onChange={e => setRestaurantName(e.nativeEvent.text)}
+        onChange={(e) => setRestaurantName(e.nativeEvent.text)}
       />
       <Input
         placeholder="Dirección"
@@ -243,15 +243,15 @@ function FormAdd(props) {
           type: "material-community",
           name: "google-maps",
           color: locationRestaurant ? "#00a680" : "#c2c2c2",
-          onPress: () => setIsVisibleMap(true)
+          onPress: () => setIsVisibleMap(true),
         }}
-        onChange={e => setRestaurantAddress(e.nativeEvent.text)}
+        onChange={(e) => setRestaurantAddress(e.nativeEvent.text)}
       />
       <Input
         placeholder="Descripción restaurante"
         multiline={true}
         inputContainerStyle={styles.textArea}
-        onChange={e => setrestaurantDescription(e.nativeEvent.text)}
+        onChange={(e) => setrestaurantDescription(e.nativeEvent.text)}
       />
     </View>
   );
@@ -262,7 +262,7 @@ function Map(props) {
     isVisibleMap,
     setIsVisibleMap,
     setLocationRestaurant,
-    toastRef
+    toastRef,
   } = props;
   const [location, setLocation] = useState(null);
 
@@ -284,7 +284,7 @@ function Map(props) {
           latitude: loc.coords.latitude,
           longitude: loc.coords.longitude,
           latitudeDelta: 0.001,
-          longitudeDelta: 0.001
+          longitudeDelta: 0.001,
         });
       }
     })();
@@ -304,12 +304,12 @@ function Map(props) {
             style={styles.mapStyle}
             initialRegion={location}
             showsUserLocation={true}
-            onRegionChange={region => setLocation(region)}
+            onRegionChange={(region) => setLocation(region)}
           >
             <MapView.Marker
               coordinate={{
                 latitude: location.latitude,
-                longitude: location.longitude
+                longitude: location.longitude,
               }}
               draggable
             />
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginLeft: 20,
     marginRight: 20,
-    marginTop: 30
+    marginTop: 30,
   },
   containerIcon: {
     alignItems: "center",
@@ -347,54 +347,54 @@ const styles = StyleSheet.create({
     marginRight: 10,
     height: 70,
     width: 70,
-    backgroundColor: "#e3e3e3"
+    backgroundColor: "#e3e3e3",
   },
   miniatureStyles: {
     width: 70,
     height: 70,
-    marginRight: 10
+    marginRight: 10,
   },
   viewFhoto: {
     alignItems: "center",
     height: 200,
-    marginBottom: 20
+    marginBottom: 20,
   },
   viewForm: {
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   input: {
-    marginBottom: 10
+    marginBottom: 10,
   },
   textArea: {
     height: 100,
     width: "100%",
     padding: 0,
-    margin: 0
+    margin: 0,
   },
   mapStyle: {
     width: "100%",
-    height: 550
+    height: 550,
   },
   viewMapBtn: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 10
+    marginTop: 10,
   },
   viewMapBtnContainerSave: {
-    paddingRight: 5
+    paddingRight: 5,
   },
   viewMapBtnSave: {
-    backgroundColor: "#00a680"
+    backgroundColor: "#00a680",
   },
   viewMapBtnContainerCancel: {
-    paddingLeft: 5
+    paddingLeft: 5,
   },
   viewMapBtnCancel: {
-    backgroundColor: "#a60d0d"
+    backgroundColor: "#a60d0d",
   },
   btnAddRestaurant: {
     backgroundColor: "#00a680",
-    margin: 20
-  }
+    margin: 20,
+  },
 });
