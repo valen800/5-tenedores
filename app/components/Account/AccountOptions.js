@@ -7,7 +7,7 @@ import ChangeEmail from "./ChangeEmailForm";
 import ChangePassword from "./ChangePasswordForm";
 
 export default function AccountOptions(props) {
-  const { userInfo, setReloadData, toasRef } = props;
+  const { userInfo, setReloadData, toastRef } = props;
   const [isVisibleModal, setIsVisibleModal] = useState(false);
   const [renderComponent, setRenderComponent] = useState(null);
 
@@ -49,7 +49,7 @@ export default function AccountOptions(props) {
             displayName={userInfo.displayName}
             setIsVisibleModal={setIsVisibleModal}
             setReloadData={setReloadData}
-            toasRef={toasRef}
+            toastRef={toastRef}
           />
         );
         setIsVisibleModal(true);
@@ -60,6 +60,7 @@ export default function AccountOptions(props) {
             email={userInfo.email}
             setIsVisibleModal={setIsVisibleModal}
             setReloadData={setReloadData}
+            toastRef={toastRef}
           />
         );
         setIsVisibleModal(true);
@@ -69,7 +70,7 @@ export default function AccountOptions(props) {
           <ChangePassword
             password={userInfo.password}
             setIsVisibleModal={setIsVisibleModal}
-            setReloadData={setReloadData}
+            toastRef={toastRef}
           />
         );
         setIsVisibleModal(true);

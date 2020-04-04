@@ -1,13 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { Input, Button } from "react-native-elements";
+import * as firebase from "firebase";
 
 export default function ChangeDisplayNameForm(props) {
   const { displayName, setIsVisibleModal, setReloadData, toastRef } = props;
-  console.log(props);
+  const [newDisplayName, setnewDisplayName] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const updateDisplayName = () => {
-    console.log("Nombre de usuario actualizado");
+    setError(null);
+    if (!newDisplayName) {
+      setError("El nombre de usuario no ha cambiado");
+    } else {
+      setIsLoading(true);
+      const update = {
+        displayName: newDisplayName
+      };
+      firebase
+        .auth()
+        .currentUser.updateProfile(update)
+        .then(() => {
+          setIsLoading(false);
+          setReloadData(true);
+          toastRef.current.show("Se ha actualizado correctamente");
+          setIsVisibleModal(false);
+        })
+        .catch(() => {
+          setError("Error al actualizar el nombre");
+          setIsLoading(false);
+        });
+    }
   };
 
   return (
@@ -16,20 +40,20 @@ export default function ChangeDisplayNameForm(props) {
         placeholder="Nombre"
         containerStyle={styles.input}
         defaultValue={displayName && displayName}
-        //onChange={..}
+        onChange={n => setnewDisplayName(n.nativeEvent.text)}
         rightIcon={{
           type: "material-community",
           name: "account-circle-outline",
           color: "#c2c2c2"
         }}
-        //errorMessage={}
+        errorMessage={error}
       />
       <Button
         title="Cambiar nombre"
         containerStyle={styles.btnContainer}
         buttonStyle={styles.btn}
         onPress={updateDisplayName}
-        /* loading={} */
+        loading={isLoading}
       />
     </View>
   );
@@ -45,7 +69,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   btnContainer: {
-    marginTop: 20
+    marginTop: 20,
+    width: "95%"
   },
   btn: {
     backgroundColor: "#00a680"

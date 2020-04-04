@@ -1,4 +1,4 @@
 export const FacebookApi = {
-  application_id: "213304646615579",
+  application_id: "228386055103074",
   permissions: ["public_profile"]
 };

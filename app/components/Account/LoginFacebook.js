@@ -8,7 +8,7 @@ import Loading from "../Loading";
 
 //TODO fix credential error
 export default function LoginFacebook(props) {
-  const { toastRef, navigation } = props;
+  const { toastReft, navigation } = props;
   const [isLoading, setIsLoading] = useState(false);
 
   async function logIn() {
@@ -27,27 +27,27 @@ export default function LoginFacebook(props) {
         setIsLoading(true);
         console.log(token);
         // Get the user's name using Facebook's Graph API
-        const response = await fetch(
-          `https://graph.facebook.com/me?access_token=${token}`
+        const credentials = await fetch(
+          `https://graph.facebook.com/me?access_token=${credentials}`
         );
 
         await firebase
           .auth()
-          .signInWithCredential(response)
+          .signInWithCredential(credentials)
           .then(() => {
             navigation.navigate("Account");
           })
           .catch(() => {
-            toastRef.current.show(
+            toastReft.current.show(
               "Error accediendo a facebook, Error desconocido, intentelo más tarde"
             );
           });
       } else if (type === "cancel") {
-        toastRef.current.show(
+        toastReft.current.show(
           "Inicio de sesión cancelada, Error desconocido, intentelo más tarde"
         );
       } else {
-        toastRef.current.show("Error desconocido, intentelo más tarde");
+        toastReft.current.show("Error desconocido, intentelo más tarde");
       }
     } catch ({ message }) {
       alert(`Facebook Login Error: ${message}`);
